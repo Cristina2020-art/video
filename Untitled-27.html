@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="shortcut icon" href="https://1xpto.netlify.app/items/favicon.gif" type="image/x-icon">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="default.css">
+  <title>Forward - Rewind video effect</title>
+  <style>
+    #controls button {
+      border: 0;
+      color: red;
+      font-weight: 900;
+    }
+
+    #box {
+      width: 60%;
+      box-sizing: border-box;
+      position: absolute;
+      left: 50%;
+      top: 10px;
+      transform: translate(-50%);
+    }
+
+    #range {
+      width: 0;
+      height: 3px;
+      background-color: red;
+      display: block;
+    }
+
+    #video {
+      width: 100%;
+    }
+
+    @media all and (orientation:portrait) {
+      #box {
+        width: 95%;
+      }
+    }
+
+    @media all and (orientation:landscape) and (max-width:640px) {
+      #box {
+        width: 95%;
+      }
+    }
+
+    @media all and (orientation:landscape) and (min-width:641px) and (max-width:768px) {
+      #box {
+        width: 95%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <img style='display: none' src='card.gif' />
+
+  <div id="box">
+    <video id="video" src="https://1xpto.netlify.app/video/video.mp4"></video>
+    <span id="range"></span>
+
+    <br>
+    <center>
+      <div id="controls">
+        <button onclick="play()">Play</button>
+        <button onclick="pause()">Pause</button>
+        <button onclick="forward()">Forward</button>
+        <button onclick="rewind()">Rewind</button>
+      </div>
+    </center>
+  </div>
+
+  <script>
+    video.onloadedmetadata = function() {
+      w = box.offsetWidth;
+      f = video.duration;
+      frange = w / f;
+    }
+    video.ontimeupdate = function() {
+      range.style.width = video.currentTime * frange + 'px';
+    }
+    video.onended = () => {
+      video.currentTime = 0;
+    }
+
+    function play() {
+      video.play();
+      i = video.currentTime;
+      cancelAnimationFrame(xd);
+      cancelAnimationFrame(x);
+    }
+
+    function pause() {
+      video.pause();
+      i = video.currentTime;
+      cancelAnimationFrame(xd);
+      cancelAnimationFrame(x);
+    }
+
+    function forward() {
+      video.pause();
+      i = video.currentTime;
+      xd = requestAnimationFrame(forward);
+      i = i + 0.1;
+      video.currentTime = i;
+      if (i >= video.duration) {
+        video.currentTime = 0;
+        cancelAnimationFrame(xd);
+        video.pause();
+      }
+    }
+
+    function rewind() {
+      video.pause();
+      i = video.currentTime;
+      x = requestAnimationFrame(rewind);
+      i = i - 0.1;
+      video.currentTime = i;
+      if (i <= 0) {
+        video.currentTime = 0;
+        cancelAnimationFrame(x);
+        video.pause();
+      }
+    }
+  </script>
+</body>
+
+</html>
